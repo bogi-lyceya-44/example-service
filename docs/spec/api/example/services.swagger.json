@@ -1,0 +1,120 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/example/services.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ExampleService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/get": {
+      "post": {
+        "summary": "Do EVERY rpc as a POST method, since it is not possible\nto implement batch processing with other type of method.",
+        "operationId": "ExampleService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/example_serviceExampleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/example_serviceExampleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExampleService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "example_serviceExampleModel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "formedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "example_serviceExampleRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "example_serviceExampleResponse": {
+      "type": "object",
+      "properties": {
+        "objs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/example_serviceExampleModel"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

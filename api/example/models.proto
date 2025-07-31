@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "github.com/lyceumtech/example-service;example_service";
+
+package api.v1.example_service;
+
+import "google/protobuf/timestamp.proto";
+
+message ExampleModel {
+    int64 id = 1;
+    google.protobuf.Timestamp formed_at = 2;
+}
