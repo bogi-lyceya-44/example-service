@@ -53,7 +53,7 @@ run:
 bin-deps: .bin-deps
 
 .bin-deps: export GOBIN := $(LOCAL_BIN)
-.bin-deps: .create-bin
+.bin-deps: .create-bin .install-protoc
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && \
 	go install github.com/rakyll/gotest@latest && \
 	go install github.com/easyp-tech/easyp/cmd/easyp@latest && \
