@@ -47,6 +47,8 @@ run:
 
 .install-protoc:
 	$(INSTALL_CMD)
+	which protoc
+	protoc --version
 
 bin-deps: .bin-deps
 
