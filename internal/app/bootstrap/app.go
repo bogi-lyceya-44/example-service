@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bogi-lyceya-44/common/pkg/closer"
+	"github.com/bogi-lyceya-44/example-service/config"
 	"github.com/bogi-lyceya-44/example-service/internal/app/api/example"
 	desc "github.com/bogi-lyceya-44/example-service/internal/pb/api/example"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -18,18 +19,18 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	httpHost = "localhost:7000"
-	grpcHost = "localhost:7001"
-)
-
 func RunApp(
 	appCtx context.Context,
+	cfg config.Config,
 	exampleService *example.Implementation,
 ) error {
 	eg, ctx := errgroup.WithContext(appCtx)
 
-	lis, err := net.Listen("tcp", grpcHost)
+	grpcAddr := net.JoinHostPort(cfg.GRPC.Host, cfg.GRPC.Port)
+	lis, err := net.Listen(
+		"tcp",
+		grpcAddr,
+	)
 	if err != nil {
 		return errors.Wrap(err, "start listening")
 	}
@@ -43,7 +44,7 @@ func RunApp(
 	if err := desc.RegisterExampleServiceHandlerFromEndpoint(
 		ctx,
 		mux,
-		grpcHost,
+		grpcAddr,
 		[]grpc.DialOption{
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		},
@@ -51,8 +52,9 @@ func RunApp(
 		return errors.Wrap(err, "registering mux")
 	}
 
+	gatewayAddr := net.JoinHostPort(cfg.Gateway.Host, cfg.Gateway.Port)
 	httpServer := http.Server{
-		Addr:    httpHost,
+		Addr:    gatewayAddr,
 		Handler: mux,
 	}
 
