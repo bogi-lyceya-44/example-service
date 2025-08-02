@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bogi-lyceya-44/common/pkg/closer"
+	"github.com/bogi-lyceya-44/example-service/config"
 	"github.com/bogi-lyceya-44/example-service/internal/app/api/example"
 	desc "github.com/bogi-lyceya-44/example-service/internal/pb/api/example"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -19,17 +20,21 @@ import (
 )
 
 const (
-	httpHost = "localhost:7000"
-	grpcHost = "localhost:7001"
+	ShutdownTimeoutInSeconds = 5
 )
 
 func RunApp(
 	appCtx context.Context,
+	cfg config.Config,
 	exampleService *example.Implementation,
 ) error {
 	eg, ctx := errgroup.WithContext(appCtx)
 
-	lis, err := net.Listen("tcp", grpcHost)
+	grpcAddr := net.JoinHostPort(cfg.GRPC.Host, cfg.GRPC.Port)
+	lis, err := net.Listen(
+		"tcp",
+		grpcAddr,
+	)
 	if err != nil {
 		return errors.Wrap(err, "start listening")
 	}
@@ -40,10 +45,10 @@ func RunApp(
 	desc.RegisterExampleServiceServer(grpcServer, exampleService)
 
 	mux := runtime.NewServeMux()
-	if err := desc.RegisterExampleServiceHandlerFromEndpoint(
+	if err = desc.RegisterExampleServiceHandlerFromEndpoint(
 		ctx,
 		mux,
-		grpcHost,
+		grpcAddr,
 		[]grpc.DialOption{
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		},
@@ -51,13 +56,14 @@ func RunApp(
 		return errors.Wrap(err, "registering mux")
 	}
 
+	gatewayAddr := net.JoinHostPort(cfg.Gateway.Host, cfg.Gateway.Port)
 	httpServer := http.Server{
-		Addr:    httpHost,
+		Addr:    gatewayAddr,
 		Handler: mux,
 	}
 
 	eg.Go(func() error {
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = httpServer.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
 			return errors.Wrap(err, "failed listening http")
 		}
 
@@ -65,14 +71,14 @@ func RunApp(
 	})
 
 	eg.Go(func() error {
-		if err := grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
+		if err = grpcServer.Serve(lis); err != nil && errors.Is(err, grpc.ErrServerStopped) {
 			return errors.Wrap(err, "failed listening grpc")
 		}
 
 		return nil
 	})
 
-	closer.AddCallback(
+	if err = closer.AddCallback(
 		CloserGroupApp,
 		func() error {
 			defer lis.Close()
@@ -80,17 +86,19 @@ func RunApp(
 
 			shutdownCtx, cancel := context.WithTimeout(
 				context.Background(),
-				5*time.Second,
+				ShutdownTimeoutInSeconds*time.Second,
 			)
 			defer cancel()
 
-			if err := httpServer.Shutdown(shutdownCtx); err != nil {
+			if err = httpServer.Shutdown(shutdownCtx); err != nil {
 				return errors.Wrap(err, "shutting down http")
 			}
 
 			return nil
 		},
-	)
+	); err != nil {
+		return errors.Wrap(err, "app callback")
+	}
 
 	log.Print("app started")
 

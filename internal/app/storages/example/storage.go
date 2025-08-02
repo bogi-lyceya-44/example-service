@@ -4,12 +4,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type ExampleStorage struct {
+type Storage struct {
 	pool *pgxpool.Pool
 }
 
-func New(pool *pgxpool.Pool) *ExampleStorage {
-	return &ExampleStorage{
+func New(pool *pgxpool.Pool) *Storage {
+	return &Storage{
 		pool: pool,
 	}
 }

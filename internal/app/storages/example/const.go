@@ -3,13 +3,11 @@ package example
 const (
 	tableName = "example_table"
 
-	columnId       = "id"
+	columnID       = "id"
 	columnFormedAt = "formed_at"
 )
 
-var (
-	allColumns = []string{
-		columnId,
-		columnFormedAt,
-	}
-)
+var allColumns = []string{
+	columnID,
+	columnFormedAt,
+}

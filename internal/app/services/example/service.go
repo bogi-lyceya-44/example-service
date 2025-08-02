@@ -7,15 +7,15 @@ import (
 )
 
 type storage interface {
-	Get(ctx context.Context, ids []models.Id) ([]models.Example, error)
+	Get(ctx context.Context, ids []models.ID) ([]models.Example, error)
 }
 
-type ExampleService struct {
+type Service struct {
 	storage storage
 }
 
-func New(storage storage) *ExampleService {
-	return &ExampleService{
+func New(storage storage) *Service {
+	return &Service{
 		storage: storage,
 	}
 }

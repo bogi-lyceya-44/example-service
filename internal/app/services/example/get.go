@@ -6,9 +6,9 @@ import (
 	"github.com/bogi-lyceya-44/example-service/internal/app/models"
 )
 
-func (s *ExampleService) Get(
+func (s *Service) Get(
 	ctx context.Context,
-	ids []models.Id,
+	ids []models.ID,
 ) ([]models.Example, error) {
 	return s.storage.Get(ctx, ids)
 }
