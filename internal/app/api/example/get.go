@@ -25,10 +25,8 @@ func (s *Implementation) Get(
 	}
 
 	ids := utils.Map(
-		req.Ids,
-		func(id int64) models.Id {
-			return models.NewId(id)
-		},
+		req.GetIds(),
+		models.NewId,
 	)
 
 	resp, err := s.exampleService.Get(ctx, ids)

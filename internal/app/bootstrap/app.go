@@ -19,6 +19,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const (
+	ShutdownTimeoutInSeconds = 5
+)
+
 func RunApp(
 	appCtx context.Context,
 	cfg config.Config,
@@ -41,7 +45,7 @@ func RunApp(
 	desc.RegisterExampleServiceServer(grpcServer, exampleService)
 
 	mux := runtime.NewServeMux()
-	if err := desc.RegisterExampleServiceHandlerFromEndpoint(
+	if err = desc.RegisterExampleServiceHandlerFromEndpoint(
 		ctx,
 		mux,
 		grpcAddr,
@@ -59,7 +63,7 @@ func RunApp(
 	}
 
 	eg.Go(func() error {
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			return errors.Wrap(err, "failed listening http")
 		}
 
@@ -67,14 +71,14 @@ func RunApp(
 	})
 
 	eg.Go(func() error {
-		if err := grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
+		if err = grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
 			return errors.Wrap(err, "failed listening grpc")
 		}
 
 		return nil
 	})
 
-	closer.AddCallback(
+	if err = closer.AddCallback(
 		CloserGroupApp,
 		func() error {
 			defer lis.Close()
@@ -82,17 +86,19 @@ func RunApp(
 
 			shutdownCtx, cancel := context.WithTimeout(
 				context.Background(),
-				5*time.Second,
+				ShutdownTimeoutInSeconds*time.Second,
 			)
 			defer cancel()
 
-			if err := httpServer.Shutdown(shutdownCtx); err != nil {
+			if err = httpServer.Shutdown(shutdownCtx); err != nil {
 				return errors.Wrap(err, "shutting down http")
 			}
 
 			return nil
 		},
-	)
+	); err != nil {
+		return errors.Wrap(err, "app callback")
+	}
 
 	log.Print("app started")
 

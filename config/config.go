@@ -30,7 +30,7 @@ type (
 
 func New() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
-		return nil, errors.Wrap(err, "load env file:")
+		return nil, errors.Wrap(err, "load env file")
 	}
 
 	cfg := &Config{}

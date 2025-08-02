@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *ExampleStorage) Get(
+func (s *Storage) Get(
 	ctx context.Context,
 	ids []models.Id,
 ) ([]models.Example, error) {
@@ -22,7 +22,6 @@ func (s *ExampleStorage) Get(
 		}).
 		PlaceholderFormat(sq.Dollar).
 		ToSql()
-
 	if err != nil {
 		return nil, errors.Wrap(err, "building sql")
 	}

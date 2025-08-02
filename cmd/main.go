@@ -18,7 +18,10 @@ func main() {
 	}
 
 	bootstrap.InitCloser()
-	ctx := bootstrap.InitGlobalContext()
+	ctx, err := bootstrap.InitGlobalContext()
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "init global context"))
+	}
 
 	// add working with config
 	pool, err := bootstrap.InitPostgresPool(
