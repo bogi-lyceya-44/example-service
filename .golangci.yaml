@@ -48,7 +48,6 @@ linters:
     - govet
     - errcheck
     - ineffassign
-    - typecheck
     - goconst
     - goimports
     - gosimple
