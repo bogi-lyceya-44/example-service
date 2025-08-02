@@ -23,7 +23,7 @@ func main() {
 	// add working with config
 	pool, err := bootstrap.InitPostgresPool(
 		ctx,
-		"postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
+		cfg.Postgres.URL,
 	)
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "init pool"))
