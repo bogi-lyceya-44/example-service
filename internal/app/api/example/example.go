@@ -8,7 +8,7 @@ import (
 )
 
 type exampleService interface {
-	Get(ctx context.Context, ids []models.Id) ([]models.Example, error)
+	Get(ctx context.Context, ids []models.ID) ([]models.Example, error)
 }
 
 type Implementation struct {

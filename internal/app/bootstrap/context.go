@@ -14,7 +14,7 @@ func InitGlobalContext() (context.Context, error) {
 	if err := closer.AddCallback(
 		CloserGroupGlobalContext,
 		func() error {
-			log.Print("cancelling context")
+			log.Print("cancel context")
 			cancel()
 			return nil
 		},

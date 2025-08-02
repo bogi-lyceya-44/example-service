@@ -36,7 +36,7 @@ func main() {
 	service := service.New(storage)
 	impl := api.New(service)
 
-	if err := bootstrap.RunApp(ctx, *cfg, impl); err != nil {
+	if err = bootstrap.RunApp(ctx, *cfg, impl); err != nil {
 		log.Fatal(errors.Wrap(err, "running app"))
 	}
 }

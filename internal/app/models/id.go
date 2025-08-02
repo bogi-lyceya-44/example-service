@@ -1,15 +1,15 @@
 package models
 
-type Id int64
+type ID int64
 
-func NewId(id int64) Id {
-	return Id(id)
+func NewID(id int64) ID {
+	return ID(id)
 }
 
-func (id Id) ToInt64() int64 {
+func (id ID) ToInt64() int64 {
 	return int64(id)
 }
 
-func (id Id) ToUint64() uint64 {
+func (id ID) ToUint64() uint64 {
 	return uint64(id)
 }

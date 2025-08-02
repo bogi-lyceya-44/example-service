@@ -21,7 +21,7 @@ func InitPostgresPool(
 	if err = closer.AddCallback(
 		CloserGroupConnections,
 		func() error {
-			log.Print("closing pool")
+			log.Print("cancel postgres")
 			pool.Close()
 			return nil
 		},

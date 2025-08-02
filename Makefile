@@ -32,7 +32,6 @@ lint:
 	echo 'Running linter on files...'
 	$(GOLANGCI_BIN) run \
 	--config=.golangci.yaml \
-	--sort-results \
 	--max-issues-per-linter=0 \
 	--max-same-issues=0
 
@@ -54,7 +53,7 @@ bin-deps: .bin-deps
 
 .bin-deps: export GOBIN := $(LOCAL_BIN)
 .bin-deps: .create-bin .install-protoc
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && \
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest && \
 	go install github.com/rakyll/gotest@latest && \
 	go install github.com/easyp-tech/easyp/cmd/easyp@latest && \
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest && \

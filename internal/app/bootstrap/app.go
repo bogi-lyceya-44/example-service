@@ -63,7 +63,7 @@ func RunApp(
 	}
 
 	eg.Go(func() error {
-		if err = httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = httpServer.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
 			return errors.Wrap(err, "failed listening http")
 		}
 
@@ -71,7 +71,7 @@ func RunApp(
 	})
 
 	eg.Go(func() error {
-		if err = grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
+		if err = grpcServer.Serve(lis); err != nil && errors.Is(err, grpc.ErrServerStopped) {
 			return errors.Wrap(err, "failed listening grpc")
 		}
 

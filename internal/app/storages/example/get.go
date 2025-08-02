@@ -12,7 +12,7 @@ import (
 
 func (s *Storage) Get(
 	ctx context.Context,
-	ids []models.Id,
+	ids []models.ID,
 ) ([]models.Example, error) {
 	sql, args, err := sq.
 		Select(allColumns...).
@@ -40,7 +40,7 @@ func (s *Storage) Get(
 		fetched,
 		func(item Example) models.Example {
 			return models.Example{
-				Id:       models.NewId(item.Id),
+				ID:       models.NewID(item.ID),
 				FormedAt: item.FormedAt,
 			}
 		},
