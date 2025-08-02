@@ -8,19 +8,25 @@ const (
 	CloserGroupGlobalContext = "global context"
 )
 
+const (
+	HighPriority = iota
+	MediumPriority
+	LowPriority
+)
+
 func InitCloser() {
 	closer.AddGroups([]closer.Group{
 		{
 			Name:     CloserGroupApp,
-			Priority: 0,
+			Priority: HighPriority,
 		},
 		{
 			Name:     CloserGroupConnections,
-			Priority: 1,
+			Priority: MediumPriority,
 		},
 		{
 			Name:     CloserGroupGlobalContext,
-			Priority: 2,
+			Priority: LowPriority,
 		},
 	}...)
 }

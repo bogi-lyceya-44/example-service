@@ -18,14 +18,16 @@ func InitPostgresPool(
 		return nil, errors.Wrap(err, "init postgres")
 	}
 
-	closer.AddCallback(
+	if err = closer.AddCallback(
 		CloserGroupConnections,
 		func() error {
-			log.Print("closing pool")
+			log.Print("cancel postgres")
 			pool.Close()
 			return nil
 		},
-	)
+	); err != nil {
+		return nil, errors.Wrap(err, "postgres callback")
+	}
 
 	return pool, nil
 }

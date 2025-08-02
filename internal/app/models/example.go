@@ -3,6 +3,6 @@ package models
 import "time"
 
 type Example struct {
-	Id       Id
+	ID       ID
 	FormedAt time.Time
 }

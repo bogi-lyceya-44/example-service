@@ -25,10 +25,8 @@ func (s *Implementation) Get(
 	}
 
 	ids := utils.Map(
-		req.Ids,
-		func(id int64) models.Id {
-			return models.NewId(id)
-		},
+		req.GetIds(),
+		models.NewID,
 	)
 
 	resp, err := s.exampleService.Get(ctx, ids)
@@ -40,7 +38,7 @@ func (s *Implementation) Get(
 		resp,
 		func(obj models.Example) *desc.ExampleModel {
 			return &desc.ExampleModel{
-				Id:       obj.Id.ToInt64(),
+				Id:       obj.ID.ToInt64(),
 				FormedAt: timestamppb.New(obj.FormedAt),
 			}
 		},
