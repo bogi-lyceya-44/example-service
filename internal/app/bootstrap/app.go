@@ -59,7 +59,7 @@ func RunApp(
 	}
 
 	gatewayAddr := net.JoinHostPort(cfg.Gateway.Host, cfg.Gateway.Port)
-	if err := mux.HandlePath(
+	if err = mux.HandlePath(
 		"GET",
 		"/docs",
 		func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
@@ -69,7 +69,7 @@ func RunApp(
 		return errors.Wrap(err, "registering swagger json")
 	}
 
-	if err := mux.HandlePath(
+	if err = mux.HandlePath(
 		"GET",
 		"/swagger/{path=**}",
 		func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
@@ -85,7 +85,7 @@ func RunApp(
 	}
 
 	eg.Go(func() error {
-		if err = httpServer.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+		if err = httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return errors.Wrap(err, "failed listening http")
 		}
 
@@ -93,7 +93,7 @@ func RunApp(
 	})
 
 	eg.Go(func() error {
-		if err = grpcServer.Serve(lis); err != nil && errors.Is(err, grpc.ErrServerStopped) {
+		if err = grpcServer.Serve(lis); err != nil && !errors.Is(err, grpc.ErrServerStopped) {
 			return errors.Wrap(err, "failed listening grpc")
 		}
 
