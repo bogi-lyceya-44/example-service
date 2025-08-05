@@ -18,9 +18,6 @@ jobs:
         with:
           go-version: ">=1.24.0"
 
-      - name: generate
-        run: make generate
-
       - name: go build
         run: go build -v ./...
 
