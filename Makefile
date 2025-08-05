@@ -63,7 +63,8 @@ bin-deps: .bin-deps
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest && \
 	go install golang.org/x/tools/cmd/goimports@latest && \
 	go install github.com/envoyproxy/protoc-gen-validate@latest && \
-	go install go.uber.org/mock/mockgen@latest
+	go install go.uber.org/mock/mockgen@latest && \
+	go install go install github.com/g3co/go-swagger-merger@latest
 
 .create-bin:
 	rm -rf ./bin
@@ -86,3 +87,6 @@ fast-generate: .generate
 	(PATH="$(PATH):$(LOCAL_BIN)" && $(EASYP_BIN) mod download && $(EASYP_BIN) generate)
 
 	$(GOIMPORTS_BIN) -w .
+
+	find . -iname "*.swagger.json" | xargs -I{} go-swagger-merger -o docs/swagger.json {}
+

@@ -9,8 +9,10 @@ import (
 
 	"github.com/bogi-lyceya-44/common/pkg/closer"
 	"github.com/bogi-lyceya-44/example-service/config"
+	"github.com/bogi-lyceya-44/example-service/docs"
 	"github.com/bogi-lyceya-44/example-service/internal/app/api/example"
 	desc "github.com/bogi-lyceya-44/example-service/internal/pb/api/example"
+	"github.com/flowchartsman/swaggerui"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
@@ -57,6 +59,26 @@ func RunApp(
 	}
 
 	gatewayAddr := net.JoinHostPort(cfg.Gateway.Host, cfg.Gateway.Port)
+	if err := mux.HandlePath(
+		"GET",
+		"/docs",
+		func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+			http.Redirect(w, r, "/swagger/", http.StatusMovedPermanently)
+		},
+	); err != nil {
+		return errors.Wrap(err, "registering swagger json")
+	}
+
+	if err := mux.HandlePath(
+		"GET",
+		"/swagger/{path=**}",
+		func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+			http.StripPrefix("/swagger", swaggerui.Handler(docs.Spec)).ServeHTTP(w, r)
+		},
+	); err != nil {
+		return errors.Wrap(err, "registering swagger json")
+	}
+
 	httpServer := http.Server{
 		Addr:    gatewayAddr,
 		Handler: mux,
