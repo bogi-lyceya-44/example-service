@@ -88,5 +88,5 @@ fast-generate: .generate
 
 	$(GOIMPORTS_BIN) -w .
 
-	find . -iname "*.swagger.json" | xargs -I{} go-swagger-merger -o docs/swagger.json {}
+	find . -iname "*.swagger.json" -print0 | xargs -0 $(LOCAL_BIN)/go-swagger-merger -o docs/swagger.json
 
