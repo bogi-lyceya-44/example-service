@@ -23,7 +23,6 @@ func main() {
 		log.Fatal(errors.Wrap(err, "init global context"))
 	}
 
-	// add working with config
 	pool, err := bootstrap.InitPostgresPool(
 		ctx,
 		cfg.Postgres.URL,

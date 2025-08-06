@@ -19,7 +19,7 @@ func InitGlobalContext() (context.Context, error) {
 			return nil
 		},
 	); err != nil {
-		return nil, errors.Wrap(err, "contex callback")
+		return nil, errors.Wrap(err, "context callback")
 	}
 
 	return ctx, nil

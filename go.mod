@@ -5,7 +5,8 @@ go 1.24.5
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/bogi-lyceya-44/common v0.0.4
-	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/caarlos0/env/v11 v11.3.1
+	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/joho/godotenv v1.5.1
