@@ -29,5 +29,9 @@ func InitPostgresPool(
 		return nil, errors.Wrap(err, "postgres callback")
 	}
 
+	if err = pool.Ping(ctx); err != nil {
+		return nil, errors.Wrap(err, "readiness probe")
+	}
+
 	return pool, nil
 }

@@ -1,30 +1,30 @@
 package config
 
 import (
-	"github.com/caarlos0/env"
+	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 )
 
 type (
 	Config struct {
-		Postgres
-		GRPC
-		Gateway
+		Postgres `envPrefix:"POSTGRES_"`
+		GRPC     `envPrefix:"GRPC_"`
+		Gateway  `envPrefix:"GATEWAY_"`
 	}
 
 	Postgres struct {
-		URL string `env:"POSTGRES_URL"`
+		URL string `env:"URL"`
 	}
 
 	GRPC struct {
-		Host string `env:"GRPC_HOST"`
-		Port string `env:"GRPC_PORT"`
+		Host string `env:"HOST"`
+		Port string `env:"PORT"`
 	}
 
 	Gateway struct {
-		Port string `env:"GATEWAY_PORT"`
-		Host string `env:"GATEWAY_HOST"`
+		Host string `env:"HOST"`
+		Port string `env:"PORT"`
 	}
 )
 
@@ -33,11 +33,11 @@ func New() (*Config, error) {
 		return nil, errors.Wrap(err, "load env file")
 	}
 
-	cfg := &Config{}
+	cfg := Config{}
 
 	if err := env.Parse(&cfg); err != nil {
 		return nil, errors.Wrap(err, "parse env file")
 	}
 
-	return cfg, nil
+	return &cfg, nil
 }
